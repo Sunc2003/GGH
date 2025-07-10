@@ -1,7 +1,7 @@
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
 from django.contrib.auth.hashers import make_password
-from models import Usuario, Rol, Area, Cargo
+from usuarios.models import Usuario, Rol, Area, Cargo
 
 @receiver(post_migrate)
 def crear_usuario_base(sender, **kwargs):

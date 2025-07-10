@@ -1,0 +1,167 @@
+{% load static %}
+
+<nav class="navbar navbar-expand-lg" role="navigation" aria-label="Menú principal" style="background: #2c3e50;">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'login' %}" aria-label="Ir a página de inicio">
+      <img src="{% static 'usuarios/img/logomarsella.png' %}" alt="Marsella Logo" height="85" loading="lazy" />
+
+    </a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarMain"
+      aria-controls="navbarMain"
+      aria-expanded="false"
+      aria-label="Mostrar menú de navegación"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarMain">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="profileDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <i class="fas fa-user fa-lg"></i>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="profileDropdown">
+            <li>
+              <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#profileModal">
+                <i class="fas fa-id-card me-2"></i>Perfil
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                <i class="fas fa-sign-out-alt me-2"></i>Salir
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Modal Perfil Usuario -->
+<div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="profileModalLabel">Perfil</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        {% if usuario %}
+          <div class="mb-2"><small class="text-muted">Nombre</small><br>{{ usuario.nombre }} {{ usuario.apellido }}</div>
+          <div class="mb-2"><small class="text-muted">Correo</small><br>{{ usuario.correo }}</div>
+          <div class="mb-2"><small class="text-muted">Área</small><br>{{ usuario.id_area.nombre_area }}</div>
+          <div class="mb-2"><small class="text-muted">Cargo</small><br>{{ usuario.id_cargo.nombre_cargo }}</div>
+          <div><small class="text-muted">Rol</small><br>{{ usuario.id_rol.nombre_rol }}</div>
+        {% else %}
+          <p class="text-muted small mb-0">No hay información disponible.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Confirmar Cerrar Sesión -->
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="logoutModalLabel">Cerrar Sesión</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body text-center">
+        <p class="mb-0">¿Desea cerrar la sesión?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-light" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-sm btn-primary" onclick="logout()">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Spinner -->
+<div class="modal fade" id="loadingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-transparent border-0">
+      <div class="modal-body text-center">
+        <div class="spinner-border text-light" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  function logout() {
+    const logoutModal = bootstrap.Modal.getInstance(document.getElementById('logoutModal'));
+    const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+    logoutModal.hide();
+    loadingModal.show();
+    setTimeout(() => {
+      window.location.href = "{% url 'login' %}";
+    }, 800);
+  }
+</script>
+
+<style>
+  
+  .navbar {
+    background: #2c3e50;
+    padding: 1.1rem 1rem 1.1rem 1rem; /* Más padding vertical */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    min-height: 70px; /* Altura mínima */
+  }
+  .navbar-brand img {
+    transition: transform 0.2s ease;
+    max-height: 120px !important;
+  }
+  .navbar-brand img:hover {
+    transform: scale(1.03);
+  }
+  .nav-link {
+    color: rgba(255,255,255,0.9) !important;
+    font-size: 1rem;
+    padding: 0.6rem 1rem !important;
+    display: flex;
+    align-items: center;
+  }
+  .nav-link i {
+    font-size: 1.35rem !important; /* Ícono usuario más grande */
+  }
+  .nav-link:hover {
+    color: #fff !important;
+  }
+  .navbar-toggler {
+    border: 1px solid rgba(255,255,255,0.5);
+    padding: 0.4rem;
+  }
+  .dropdown-menu {
+    min-width: 130px;
+    font-size: 1rem;
+    margin-top: 0.5rem;
+  }
+  .dropdown-item {
+    padding: 0.5rem 1.2rem;
+  }
+  .modal-content { border-radius: 8px; }
+  .modal-header { padding: 0.8rem 1.2rem; background: #f8f9fa; }
+  .btn { font-size: 0.975rem; }
+  .modal-body { padding: 1.2rem; }
+  .modal-footer { padding: 0.5rem 1.2rem; }
+  
+</style>

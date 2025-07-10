@@ -47,15 +47,18 @@ def panel_admin(request):
     rol = request.session.get('rol', '').lower()
     if rol != 'administrador':
         return HttpResponse('No autorizado', status=403)
-    
-    usuario = None
+
     usuario_id = request.session.get('usuario_id')
-    if usuario_id:
-        try:
-            usuario = Usuario.objects.get(id_usuario=usuario_id)
-        except Usuario.DoesNotExist:
-            usuario = None
-    
+    if not usuario_id:
+        messages.error(request, "Sesión inválida. Vuelva a iniciar sesión.")
+        return redirect('login')
+
+    try:
+        usuario = Usuario.objects.get(id_usuario=usuario_id)
+    except Usuario.DoesNotExist:
+        messages.error(request, "Usuario no encontrado.")
+        return redirect('login')
+
     context = {
         'rol': rol,
         'usuario': usuario,
